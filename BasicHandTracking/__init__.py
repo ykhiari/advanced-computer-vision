@@ -1,0 +1,1 @@
+from detectors.handDetector import hand_Detector
