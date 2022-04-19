@@ -31,6 +31,11 @@ class hand_Detector:
                                    min_detection_confidence=min_detection_confidence,
                                    min_tracking_confidence=min_tracking_confidence)
         
+    def detect_hands_landmarks(self, frame):
+        cvtFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self.results = self.hands.process(cvtFrame)
+
+
     def draw_landmarks_on_frame(self, frame, draw_connections=False) -> array:
         """draw the hand landmarks on frame
 
@@ -41,10 +46,8 @@ class hand_Detector:
         Returns:
             Array: return the preprocessed image
         """
-        cvtFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = self.hands.process(cvtFrame)
-        if results.multi_hand_landmarks:
-            for handLms in results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks:
                 if draw_connections:
                     self.mpDraw.draw_landmarks(frame, handLms, self.mpHands.HAND_CONNECTIONS)
                 else:
@@ -67,10 +70,8 @@ class hand_Detector:
         if len(ids) == 0:
             raise HandLandmarkException("The list of landmarks is empty")
         h, w, _ = frame.shape
-        cvtFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = self.hands.process(cvtFrame)
-        if results.multi_hand_landmarks:
-            for handLms in results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks:
                 for idy, lm_coor in enumerate(handLms.landmark):
                     cx, cy = int(lm_coor.x * w), int(lm_coor.y * h)
                     if idy in ids:
@@ -88,10 +89,8 @@ class hand_Detector:
             tuple: x and y coordinates in a tuple
         """
         h, w, _ = frame.shape
-        cvtFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = self.hands.process(cvtFrame)
-        if results.multi_hand_landmarks:
-            myHand = results.multi_hand_landmarks[handnum]
+        if self.results.multi_hand_landmarks:
+            myHand = self.results.multi_hand_landmarks[handnum]
             for idy, lm_coor in enumerate(myHand.landmark):
                 if idy == lm_id:
                     return (int(lm_coor.x * w), int(lm_coor.y * h))
