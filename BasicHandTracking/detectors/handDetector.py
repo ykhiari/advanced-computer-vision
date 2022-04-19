@@ -77,6 +77,16 @@ class hand_Detector:
                         cv2.circle(frame, (cx,cy), 5, (255,255,0), cv2.FILLED)
                         
     def get_lm_coordinates_for_given_hand(self, frame, lm_id, handnum=0) -> tuple:
+        """Get specific landmarks coordinates for specific hands
+
+        Args:
+            frame : the frame to be drawn on
+            lm_id : the landmark id for which we will get the coordicates
+            handnum (int, optional): the hand id. Defaults to 0.
+
+        Returns:
+            tuple: x and y coordinates in a tuple
+        """
         h, w, _ = frame.shape
         cvtFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.hands.process(cvtFrame)
