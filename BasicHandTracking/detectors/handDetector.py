@@ -14,8 +14,8 @@ class hand_Detector:
     def __init__(self, 
                  static_image_mode=False, 
                  max_num_hands=2, 
-                 min_detection_confidence=0.5, 
-                 min_tracking_confidence=0.5) -> None:
+                 min_detection_confidence=0.75, 
+                 min_tracking_confidence=0.75) -> None:
         """Constructor to the hand detector class.
 
         Args:
@@ -77,21 +77,21 @@ class hand_Detector:
                     if idy in ids:
                         cv2.circle(frame, (cx,cy), 5, (255,255,0), cv2.FILLED)
                         
-    def get_lm_coordinates_for_given_hand(self, frame, lm_id, handnum=0) -> tuple:
+    def get_lm_coordinates_for_given_hand(self, frame, handnum=0) -> list:
         """Get specific landmarks coordinates for specific hands
 
         Args:
             frame : the frame to be drawn on
-            lm_id : the landmark id for which we will get the coordicates
             handnum (int, optional): the hand id. Defaults to 0.
 
         Returns:
-            tuple: x and y coordinates in a tuple
+            list: list of tuple coord_id, x and y coordinates of the all landmarks
         """
         h, w, _ = frame.shape
+        coord = []
         if self.results.multi_hand_landmarks:
             myHand = self.results.multi_hand_landmarks[handnum]
             for idy, lm_coor in enumerate(myHand.landmark):
-                if idy == lm_id:
-                    return (int(lm_coor.x * w), int(lm_coor.y * h))
+                coord.append((idy,int(lm_coor.x * w), int(lm_coor.y * h)))
+        return coord
             
